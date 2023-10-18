@@ -228,22 +228,23 @@ if Dist2:
     st.markdown(" ## The culprit seams to be determined by if one is a smoker or not!")
 
     st.write("***So, how many smokers are there in the dataset?***" )
+    color_map = {'yes': 'blue', 'no': 'red'}
 
-    fig = px.histogram(insurance, x='smoker', nbins=64, title='Distribution of Smokers', color='smoker')
-    fig.update_layout(xaxis=dict(showgrid=False),
-                yaxis=dict(showgrid=False))
+    category_order = ['no', 'yes']
+    insurance['smoker'] = pd.Categorical(insurance['smoker'], categories=category_order, ordered=True)
+
+
+    fig = px.histogram(insurance, x='smoker', nbins=64, title='Distribution of Smokers', color='smoker', color_discrete_map=color_map)
+    fig.update_layout(xaxis=dict(showgrid=False), yaxis=dict(showgrid=False))
     st.plotly_chart(fig, use_container_width=True)
+
 
     st.write(f"**Mean {'charges'} by {'smoker'}**")
     mean_data3 = df.groupby('smoker')['charges'].mean().reset_index()
-    fig = px.bar(mean_data3, x='smoker', y='charges',color='smoker')
+    fig = px.bar(mean_data3, x='smoker', y='charges', color='smoker', color_discrete_map=color_map)
+    fig.update_layout(xaxis=dict(showgrid=False), yaxis=dict(showgrid=False))
     st.plotly_chart(fig, use_container_width=True)
-
-
-
-    st.markdown('### So, what is next')
-    with st.expander(  "# Click here to see!"):
-        st.write("The next step is to create a regression model based on the parameters in this dataset to help determine and predict charges for individuals!. ")
+    st.write("*Even though there are much fewer smokers in the dataset, we can observe that their average insurance charges are significantly higher.*")
 
 
 hipl= st.sidebar.checkbox("**Hiplot**")
